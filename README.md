@@ -11,32 +11,32 @@ service cloud.firestore {
 
 -----------------------------
 # Start a collection
-createdAt
-October 1, 2025 at 12:40:51 PM UTC+7
-(timestamp)
+username
+"Superadmin"
 
-email
-"kssb2156@gmail.com"
-(string)
-
-lastLogin
-October 1, 2025 at 1:24:51 PM UTC+7
-(timestamp)
-
-name
-"Kssb2156"
+uid
+"6vuQUmkKkNa2FXoIoOdTcAoOYL13"
 (string)
 
 role
 "admin"
 (string)
 
-uid
-"6vuQUmkKkNa2FXoIoOdTcAoOYL13"
+name
+"Kssb2156"
 (string)
 
-username
-"Superadmin"
+lastLogin
+October 1, 2025 at 1:24:51 PM UTC+7
+(timestamp)
+
+email
+"kssb2156@gmail.com"
+(string)
+
+createdAt
+October 1, 2025 at 12:40:51 PM UTC+7
+(timestamp)
 ---------------------
 # Start a collection
 createdAt

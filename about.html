@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome | Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Variables for Dark Mode */
+        :root {
+            --primary-color: #63b3ed;
+            --primary-color-hover: #90cdf4;
+            --bg-dark-primary: #111827;
+            --text-light: #f7fafc;
+            --text-muted: #a0aec0;
+        }
+
+        /* Base Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark-primary);
+            color: var(--text-light);
+            line-height: 1.6;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* --- Header/Navigation (ปุ่มมุมบนขวา) --- */
+        .header-nav {
+            position: absolute; 
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+        
+        /* Button Style */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                        transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
+                        box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+            border: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--bg-dark-primary);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-color-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 179, 237, 0.4);
+        }
+
+        /* --- Minimal Hero Section (ข้อความตรงกลาง) --- */
+        .hero-minimal {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px; /* เพิ่ม padding เพื่อไม่ให้เนื้อหาชิดขอบจอเกินไป */
+        }
+
+        .hero-content {
+            max-width: 600px;
+        }
+
+        .hero-content h1 {
+            font-size: 4.5rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--primary-color), var(--text-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0; 
+            animation: fadeInGlow 1.8s cubic-bezier(0.215, 0.61, 0.355, 1) 0.5s forwards; 
+            will-change: opacity, transform, text-shadow;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            font-weight: 300;
+            opacity: 0;
+            animation: fadeIn 1.2s cubic-bezier(0.215, 0.61, 0.355, 1) 1.5s forwards; 
+            will-change: opacity;
+        }
+
+        /* **Keyframe Animation สำหรับ H1: Fade-in พร้อม Glow Effect** */
+        @keyframes fadeInGlow {
+            0% { 
+                opacity: 0; 
+                transform: translateY(20px); 
+                text-shadow: 0 0 0 rgba(99, 179, 237, 0); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0); 
+                text-shadow: 0 0 30px rgba(99, 179, 237, 0.6);
+            }
+        }
+        
+        /* Keyframe Animation สำหรับ P: Fade-in ธรรมดา */
+        @keyframes fadeIn {
+            0% { 
+                opacity: 0; 
+            }
+            100% { 
+                opacity: 1; 
+            }
+        }
+
+        /* --- Mobile Responsiveness --- */
+        @media (max-width: 768px) {
+            .header-nav {
+                top: 15px;
+                right: 15px;
+            }
+            
+            .btn {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+
+            .hero-content h1 {
+                font-size: 3rem; /* ลดขนาดตัวอักษร H1 สำหรับหน้าจอมือถือ */
+            }
+
+            .hero-content p {
+                font-size: 1rem; /* ลดขนาดตัวอักษร P สำหรับหน้าจอมือถือ */
+                padding: 0 20px; /* เพิ่ม padding ด้านข้างเพื่อไม่ให้ข้อความชิดขอบจอ */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content h1 {
+                font-size: 2.5rem; /* ลดขนาด H1 ลงไปอีก */
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <header class="header-nav">
+        <a href="login.html" class="btn btn-primary">
+            เข้าสู่ระบบ
+        </a>
+    </header>
+
+    <div class="hero-minimal">
+        <div class="hero-content">
+            <h1>Welcome.</h1>
+            <p>
+                แพลตฟอร์มพรีเมียมที่เรียบง่ายและปลอดภัย
+            </p>
+        </div>
+    </div>
+
+</body>
+</html>

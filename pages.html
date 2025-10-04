@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://public-frontend-cos.metadl.com/mgx/img/favicon.png" type="image/png">
+    <title>Free Program </title>
+    <link rel="stylesheet" href="./style.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+</head>
+
+<body>
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>กำลังโหลด...</p>
+    </div>
+
+    <nav id="navbar" class="navbar hidden">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h2>Free Program</h2>
+            </div>
+            <div class="nav-menu">
+                <span id="userEmail" class="user-info"></span>
+                <span id="userRole" class="user-role"></span>
+                <button id="logoutBtn" class="btn btn-secondary">ออกจากระบบ</button>
+            </div>
+        </div>
+    </nav>
+
+    <div id="loginSection" class="login-section">
+        <div class="login-container">
+            <div class="login-card">
+                <h1>เข้าสู่ระบบ</h1>
+                <p>Login เพื่อรับโปรแกรมฟรี</p>
+                
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="email">อีเมล:</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">รหัสผ่าน:</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">เข้าสู่ระบบ</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    
+    <div id="mainContent" class="main-content hidden">
+        <div id="adminPanel" class="admin-panel hidden">
+            <div class="admin-header">
+                <h2>🛠️ แผงควบคุมผู้ดูแลระบบ</h2>
+                <div class="admin-tabs">
+                    <button class="tab-btn active" data-tab="programs">จัดการโปรแกรม</button>
+                    <button class="tab-btn" data-tab="users">จัดการสมาชิก</button>
+                </div>
+            </div>
+
+            <div id="programsTab" class="tab-content active">
+                <div class="section-header">
+                    <h3>จัดการโปรแกรม</h3>
+                    <button id="addProgramBtn" class="btn btn-primary">เพิ่มโปรแกรม</button>
+                </div>
+                
+                <!-- Search for Admin Programs -->
+                <!-- <div class="search-container">
+                    <div class="search-input-wrapper">
+                        <span class="search-icon">
+                        <input type="text" id="adminProgramSearchInput" class="search-input" placeholder="ค้นหาโปรแกรม... (ชื่อ, คำอธิบาย, เวอร์ชัน)">
+                        <button type="button" id="clearAdminSearch" class="clear-search hidden">✕</button>
+                    </div>
+                </div> -->
+                
+                <div id="adminProgramsList" class="admin-programs-list">
+                </div>
+            </div>
+
+            <div id="usersTab" class="tab-content">
+                <div class="section-header">
+                    <h3>จัดการสมาชิก</h3>
+                    <button id="addUserBtn" class="btn btn-primary">เพิ่มสมาชิก</button>
+                </div>
+                
+                <!-- Search for Users -->
+                <!-- <div class="search-container">
+                    <div class="search-input-wrapper">
+                        <span class="search-icon">
+                        <input type="text" id="userSearchInput" class="search-input" placeholder="ค้นหาสมาชิก... (ชื่อ, อีเมล)">
+                        <button type="button" id="clearUserSearch" class="clear-search hidden">✕</button>
+                    </div>
+                </div> -->
+                
+                <div id="usersList" class="users-list">
+                </div>
+            </div>
+        </div>
+
+        <div id="userPanel" class="user-panel">
+            <div class="user-header">
+                <div class="header-text">
+                    <h2>📦 โปรแกรมฟรีพร้อมใช้งาน </h2>
+                    <p>เลือกโปรแกรมที่ต้องการดาวน์โหลด</p>
+                </div>
+
+                <button id="userChangePasswordBtn" class="btn btn-secondary btn-sm">
+                    ⚙️ เปลี่ยนรหัสผ่าน
+                </button>
+            </div>
+            
+            <!-- Search for User Programs -->
+            <div class="search-container">
+                <div class="search-input-wrapper">
+                    <span class="search-icon">
+                    <input type="text" id="programSearchInput" class="search-input" placeholder="ค้นหาโปรแกรม...">
+                    <!-- <button type="button" id="clearProgramSearch" class="clear-search hidden">✕</button> -->
+                </div>
+            </div>
+            
+            <div id="programsList" class="programs-list">
+            </div>
+        </div>
+    </div>
+    
+    <div id="addProgramModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>เพิ่มโปรแกรมใหม่</h3>
+                <span class="close">&times;</span>
+            </div>
+            <form id="addProgramForm">
+                <div class="form-group">
+                    <label for="programName">ชื่อโปรแกรม:</label>
+                    <input type="text" id="programName" required>
+                </div>
+                <div class="form-group">
+                    <label for="programDescription">คำอธิบาย:</label>
+                    <textarea id="programDescription" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="programVersion">เวอร์ชัน:</label>
+                    <input type="text" id="programVersion" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">เพิ่มโปรแกรม</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addProgramModal')">ยกเลิก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="editProgramModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>แก้ไขโปรแกรม</h3>
+                <span class="close">&times;</span>
+            </div>
+            <form id="editProgramForm">
+                <input type="hidden" id="editProgramId">
+                <div class="form-group">
+                    <label for="editProgramName">ชื่อโปรแกรม:</label>
+                    <input type="text" id="editProgramName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editProgramDescription">คำอธิบาย:</label>
+                    <textarea id="editProgramDescription" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editProgramVersion">เวอร์ชัน:</label>
+                    <input type="text" id="editProgramVersion" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">บันทึกการเปลี่ยนแปลง</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editProgramModal')">ยกเลิก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>เพิ่มสมาชิกใหม่</h3>
+                <span class="close">&times;</span>
+            </div>
+            <form id="addUserForm">
+                <div class="form-group">
+                    <label for="newUserEmail">อีเมล:</label>
+                    <input type="email" id="newUserEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="newUserPassword">รหัสผ่าน:</label>
+                    <input type="password" id="newUserPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="newUserDisplayName">ชื่อแสดง:</label>
+                    <input type="text" id="newUserDisplayName" required>
+                </div>
+                <div class="form-group">
+                    <label for="newUserRole">สิทธิ์:</label>
+                    <select id="newUserRole" required>
+                        <option value="user">สมาชิกทั่วไป</option>
+                        <option value="admin">ผู้ดูแลระบบ</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">เพิ่มสมาชิก</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addUserModal')">ยกเลิก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+<div id="customDialogModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="dialogTitle">ยืนยันการดำเนินการ</h3>
+            <span class="close" onclick="closeModal('customDialogModal')">&times;</span>
+        </div>
+        <form id="customDialogForm">
+            <div class="modal-body">
+                <p id="dialogMessage" style="margin-bottom: 2rem; color: var(--text-light);">คุณต้องการดำเนินการต่อหรือไม่?</p>
+                
+                <div id="dialogInputGroup" class="form-group hidden">
+                    <label id="dialogInputLabel" for="dialogInput">กรุณากรอกรหัสผ่านของคุณ</label>
+                    <input type="password" id="dialogInput" placeholder="รหัสผ่าน">
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="customDialog.reject()">ยกเลิก</button>
+                <button type="submit" class="btn btn-danger" id="dialogConfirmBtn">ยืนยัน</button>
+            </div>
+        </form>
+    </div>
+</div>
+    <div id="changePasswordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🔑 เปลี่ยนรหัสผ่าน</h3>
+                <span class="close">&times;</span>
+            </div>
+            <form id="changePasswordForm">
+                <input type="hidden" id="changePasswordUid">
+                <p id="changePasswordUserEmail" style="font-weight: 600; color: var(--primary-dark);"></p>
+                
+                <div class="form-group">
+                    <label for="currentPassword">รหัสผ่านปัจจุบัน:</label>
+                    <input type="password" id="currentPassword" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="newPassword">รหัสผ่านใหม่:</label>
+                    <input type="password" id="newPassword" minlength="6" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmNewPassword">ยืนยันรหัสผ่านใหม่:</label>
+                    <input type="password" id="confirmNewPassword" minlength="6" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">บันทึกรหัสผ่านใหม่</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('changePasswordModal')">ยกเลิก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="alertContainer" class="alert-container"></div>
+
+    <script src="./firebase-config.js"></script>
+    <script src="./script.js"></script>
+</body>
+
+</html>
